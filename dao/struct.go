@@ -88,3 +88,15 @@ type Comment struct {
 	// 父级评论
 	Parent uint
 }
+
+const (
+	Admin Role = iota
+	Moderator
+	Ordinary
+)
+
+// Clear 清除密码返回数据
+func (u User) Clear() User {
+	u.Pass = ""
+	return u
+}
