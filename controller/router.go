@@ -13,5 +13,9 @@ func (r *router) InitApiRouter(router *gin.Engine) {
 		// 用户相关
 		POST("/user/sendsms", User.SendSMS).
 		POST("/user/signup", User.Signup).
-		POST("/user/login", User.Login)
+		POST("/user/login", User.Login).
+		// 帖子相关
+		GET("/article/list", Article.GetArticleList).
+		POST("/article/create", Article.CreateArticle)
+
 }

@@ -88,7 +88,7 @@ func (u *user) Signup(ctx *gin.Context) {
 		return
 	}
 	// 创建用户
-	err = dao.Dao.CreateUser(params.Name, params.Number, utils.CalculateMD5Hash(params.Pass), params.Img, params.Email, 0)
+	err = dao.Dao.CreateUser(params.Name, params.Number, utils.CalculateMD5Hash(params.Pass), params.Img, params.Email, 2)
 	if err != nil {
 		fmt.Println("注册创建用户时出现错误", err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{
