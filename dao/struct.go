@@ -63,11 +63,11 @@ type Article struct {
 	// 帖子删除时间
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 	// 帖子标题
-	Title string
+	Title string `gorm:"not null"`
 	// 帖子内容
-	Text string `gorm:"type: text"`
+	Text string `gorm:"type: text;not null" `
 	// 发布者
-	Sender uint
+	Sender uint `gorm:"not null"`
 	// 修改者
 	Modified uint
 }

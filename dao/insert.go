@@ -3,6 +3,7 @@ package dao
 import (
 	"errors"
 	"fmt"
+	"time"
 )
 
 // CreateUser 创建用户
@@ -21,4 +22,19 @@ func (d *dao) CreateUser(name string, number string, pass string, imgUrl string,
 		return errors.New(fmt.Sprint("创建用户出现错误:", tx.Error.Error()))
 	}
 	return nil
+}
+
+// CreateArticle 创建帖子
+func (d *dao) CreateArticle(user uint, text string, title string) (Article, error) {
+	order := Article{
+		Sender:    user,
+		Text:      text,
+		Title:     title,
+		CreatedAt: time.Now(),
+	}
+	tx := d.db.Create(&order)
+	if tx.Error != nil {
+		return Article{}, errors.New(fmt.Sprint("创建帖子出现错误:", tx.Error.Error()))
+	}
+	return order, nil
 }

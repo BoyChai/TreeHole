@@ -36,3 +36,13 @@ func (d *dao) GetUser(id uint) (User, error) {
 	}
 	return u.Clear(), nil
 }
+
+// GetArticles 获取帖子列表
+func (d *dao) GetArticles() ([]Article, error) {
+	var articles []Article
+	tx := d.db.First(&articles)
+	if tx != nil {
+		return []Article{}, errors.New(fmt.Sprint("帖子查询错误:", tx.Error.Error()))
+	}
+	return articles, nil
+}

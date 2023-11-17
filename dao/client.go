@@ -37,12 +37,12 @@ func AutoTables() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	// 工单表
+	// 帖子表
 	err = Dao.db.AutoMigrate(&Article{})
 	if err != nil {
 		fmt.Println(err)
 	}
-	// 聊天表
+	// 评论表
 	err = Dao.db.AutoMigrate(&Comment{})
 	if err != nil {
 		fmt.Println(err)
