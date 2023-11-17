@@ -46,3 +46,13 @@ func (d *dao) GetArticles() ([]Article, error) {
 	}
 	return articles, nil
 }
+
+// GetComment 根据帖子获取帖子列表
+func (d *dao) GetComment(id string) ([]Comment, error) {
+	var comment []Comment
+	tx := d.db.Where("article = ?", id).First(&comment)
+	if tx != nil {
+		return []Comment{}, errors.New(fmt.Sprint("帖子查询错误:", tx.Error.Error()))
+	}
+	return comment, nil
+}
