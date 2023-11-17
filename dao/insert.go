@@ -38,3 +38,18 @@ func (d *dao) CreateArticle(user uint, text string, title string) (Article, erro
 	}
 	return order, nil
 }
+
+// SendComment 发送评论
+func (d *dao) SendComment(user uint, article uint, text string, parent uint) (Comment, error) {
+	comment := Comment{
+		Sender:  user,
+		Article: article,
+		Text:    text,
+		Parent:  parent,
+	}
+	tx := d.db.Create(&comment)
+	if tx.Error != nil {
+		return Comment{}, errors.New(fmt.Sprint("创建帖子出现错误:", tx.Error.Error()))
+	}
+	return comment, nil
+}
