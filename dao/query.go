@@ -40,19 +40,19 @@ func (d *dao) GetUser(id uint) (User, error) {
 // GetArticles 获取帖子列表
 func (d *dao) GetArticles() ([]Article, error) {
 	var articles []Article
-	tx := d.db.First(&articles)
-	if tx != nil {
-		return []Article{}, errors.New(fmt.Sprint("帖子查询错误:", tx.Error.Error()))
+	tx := d.db.Find(&articles, "deleted_at IS NULL")
+	if tx.Error != nil {
+		return []Article{}, errors.New(fmt.Sprintf("帖子查询错误: %s", tx.Error.Error()))
 	}
 	return articles, nil
 }
 
-// GetComment 根据帖子获取帖子列表
+// GetComment 根据帖子获取评论列表
 func (d *dao) GetComment(id string) ([]Comment, error) {
-	var comment []Comment
-	tx := d.db.Where("article = ?", id).First(&comment)
-	if tx != nil {
-		return []Comment{}, errors.New(fmt.Sprint("帖子查询错误:", tx.Error.Error()))
+	var comments []Comment
+	tx := d.db.Model(Comment{}).Where("article = ?", id).Find(&comments)
+	if tx.Error != nil {
+		return []Comment{}, errors.New(fmt.Sprintf("帖子查询错误: %s", tx.Error))
 	}
-	return comment, nil
+	return comments, nil
 }

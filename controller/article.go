@@ -63,7 +63,7 @@ func (a article) GetArticleList(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"msg":  "获取帖子列表失败",
-			"data": nil,
+			"data": err.Error(),
 		})
 		return
 	}
