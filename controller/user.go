@@ -48,9 +48,10 @@ func (u *user) Signup(ctx *gin.Context) {
 		Name   string `form:"name" binding:"required"`
 		Number string `form:"number" binding:"required"`
 		Pass   string `form:"pass"  binding:"required"`
-		Img    string `form:"img_url"  binding:"required"`
-		Email  string `form:"email"`
-		Code   string `form:"code" binding:"required"`
+		//Img    string `form:"img_url"  binding:"required"`
+		Img   string `form:"img_url"`
+		Email string `form:"email"`
+		Code  string `form:"code" binding:"required"`
 	})
 	if err := ctx.Bind(&params); err != nil {
 		fmt.Println("Bind请求参数失败, " + err.Error())
@@ -63,12 +64,16 @@ func (u *user) Signup(ctx *gin.Context) {
 	// 核验是否已注册
 	numberUser, err := dao.Dao.CheckNumberUser(params.Number)
 	if err != nil {
-		fmt.Println("核验用户是否已注册失败")
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"msg":  err.Error(),
-			"data": nil,
-		})
-		return
+		if err.Error() == "用户检查出现错误:record not found" {
+
+		} else {
+			fmt.Println("核验用户是否已注册失败")
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"msg":  err.Error(),
+				"data": nil,
+			})
+			return
+		}
 	}
 	if numberUser.Number != "" {
 		fmt.Println(numberUser.Number + "已被注册")
@@ -86,6 +91,9 @@ func (u *user) Signup(ctx *gin.Context) {
 			"data": nil,
 		})
 		return
+	}
+	if params.Email == "" {
+		params.Email = "xxx@xx.com"
 	}
 	// 创建用户
 	err = dao.Dao.CreateUser(params.Name, params.Number, utils.CalculateMD5Hash(params.Pass), params.Img, params.Email, 2)
@@ -141,4 +149,35 @@ func (u *user) Login(ctx *gin.Context) {
 		"data": token,
 	})
 	return
+}
+
+// GetUser 获取某个用户的详细信息
+func (u *user) GetUser(ctx *gin.Context) {
+	//参数绑定
+	params := new(struct {
+		ID string `form:"id" binding:"required"`
+	})
+	if err := ctx.Bind(&params); err != nil {
+		fmt.Println("Bind请求参数失败, " + err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"msg":  err.Error(),
+			"data": nil,
+		})
+		return
+	}
+	// 拿到身份
+	//claims, _ := ctx.Get("claims")
+	//role := claims.(map[string]interface{})["role"]
+	articleInfo, err := dao.Dao.GetUser(params.ID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"msg":  "获取用户信息失败",
+			"data": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"msg":  "获取用户信息成功",
+		"data": articleInfo,
+	})
 }
