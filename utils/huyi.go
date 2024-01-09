@@ -15,6 +15,9 @@ import (
 
 var Code map[string]string
 
+func init() {
+	Code = make(map[string]string)
+}
 func SendMsg(mobile string) error {
 	// 随机数
 	rand.Seed(time.Now().UnixNano())
