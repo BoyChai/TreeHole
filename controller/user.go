@@ -5,7 +5,9 @@ import (
 	"TreeHole/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"math/rand"
 	"net/http"
+	"time"
 )
 
 var User user
@@ -93,7 +95,7 @@ func (u *user) Signup(ctx *gin.Context) {
 		return
 	}
 	if params.Email == "" {
-		params.Email = "xxx@xx.com"
+		params.Email = generateRandomEmail()
 	}
 	// 创建用户
 	err = dao.Dao.CreateUser(params.Name, params.Number, utils.CalculateMD5Hash(params.Pass), params.Img, params.Email, 2)
@@ -180,4 +182,19 @@ func (u *user) GetUser(ctx *gin.Context) {
 		"msg":  "获取用户信息成功",
 		"data": articleInfo,
 	})
+}
+
+func generateRandomEmail() string {
+	// 生成随机字符串作为邮箱用户名部分
+	rand.Seed(time.Now().UnixNano())
+	charSet := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	username := make([]byte, 8)
+	for i := range username {
+		username[i] = charSet[rand.Intn(len(charSet))]
+	}
+
+	// 生成随机的域名部分
+	domain := "example.com" // 可以根据需要更改域名
+
+	return fmt.Sprintf("%s@%s", string(username), domain)
 }
