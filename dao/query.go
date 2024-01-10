@@ -46,7 +46,7 @@ func (d *dao) GetUser(id string) (User, error) {
 // GetArticles 获取帖子列表
 func (d *dao) GetArticles() ([]Article, error) {
 	var articles []Article
-	tx := d.db.Find(&articles, "deleted_at IS NULL")
+	tx := d.db.Order("id DESC").Find(&articles, "deleted_at IS NULL")
 	if tx.Error != nil {
 		return []Article{}, errors.New(fmt.Sprintf("帖子查询错误: %s", tx.Error.Error()))
 	}
